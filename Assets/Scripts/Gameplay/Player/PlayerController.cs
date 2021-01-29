@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Gameplay.ButtonPickup;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
@@ -49,9 +51,12 @@ namespace Gameplay.Player
 
         public ControlController controlController;
 
+        public GameController gc;
+
         // Use this for initialization
         private void Start()
         {
+            gc = GameObject.FindObjectOfType<GameController>();
             m_CharacterController = GetComponent<CharacterController>();
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
@@ -125,7 +130,7 @@ namespace Gameplay.Player
             }
             else
             {
-                m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
+                m_MoveDir += Physics.gravity*(m_GravityMultiplier*Time.fixedDeltaTime);
             }
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
@@ -260,6 +265,24 @@ namespace Gameplay.Player
             }
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
         }
+
+        public void Teleport(Vector3 teleportHere)
+        {
+            m_CharacterController.enabled = false;
+            this.transform.position = teleportHere;
+            m_CharacterController.enabled = true;
+        }
+
+        public void PlayNoise(AudioClip noise)
+        {
+            m_AudioSource.PlayOneShot(noise);
+        }
+
+        public List<ControlPickupEnum> LoseControls(int howManyToLose)
+        {
+            return controlController.LoseControls(howManyToLose);
+        }
+        
     }
 
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using Random = UnityEngine.Random;
 
 
 namespace Gameplay.Player
@@ -22,6 +22,8 @@ namespace Gameplay.Player
         public AxisChangeEnum strafeAxisChange;
 
         private bool _jumpInput;
+
+        private PlayerController p;
 
         public bool JumpInput
         {
@@ -47,6 +49,7 @@ namespace Gameplay.Player
 
         private void Start()
         {
+            p = GetComponent<PlayerController>();
             canForward = true;
             canBackward = true;
             canLeft = true;
@@ -72,14 +75,14 @@ namespace Gameplay.Player
                 case AxisChangeEnum.PositiveFromNeutral:
                     if (!canRight)
                     {
-                        //TODO: play the noise of the right key
+                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Right);
                     }
                     strafeAxisChange = AxisChangeEnum.Positive;
                     break;
                 case AxisChangeEnum.NegativeFromNeutral:
                     if (!canLeft)
                     {
-                        //TODO: play the noise of the left key
+                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Left);
                     }
                     strafeAxisChange = AxisChangeEnum.Negative;
                     break;
@@ -94,14 +97,14 @@ namespace Gameplay.Player
                 case AxisChangeEnum.PositiveFromNeutral:
                     if (!canForward)
                     {
-                        //TODO: play the noise of the forward key
+                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Forward);
                     }
                     forwardAxisChange = AxisChangeEnum.Positive;
                     break;
                 case AxisChangeEnum.NegativeFromNeutral:
-                    if (!canForward)
+                    if (!canBackward)
                     {
-                        //TODO: play the noise of the forward key
+                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Backward);
                     }
                     forwardAxisChange = AxisChangeEnum.Negative;
                     break;
@@ -115,7 +118,7 @@ namespace Gameplay.Player
                 }
                 else
                 {
-                    //TODO: play the noise of the spacebar.
+                    p.gc.MakePickupPlayNoise(ControlPickupEnum.Jump);
                 }
             }
             
@@ -200,6 +203,45 @@ namespace Gameplay.Player
                     default:
                         break;
                 }
+            }
+        }
+
+
+        public List<ControlPickupEnum> LoseControls(int numberToLose)
+        {
+            List<ControlPickupEnum> lostControls = new List<ControlPickupEnum>();
+            if (canForward)
+            {
+                lostControls.Add(ControlPickupEnum.Forward);
+            }
+            if (canBackward)
+            {
+                lostControls.Add(ControlPickupEnum.Backward);
+            }
+            if (canLeft)
+            {
+                lostControls.Add(ControlPickupEnum.Left);
+            }
+            if (canRight)
+            {
+                lostControls.Add(ControlPickupEnum.Right);
+            }
+
+            if (lostControls.Count <= 1)
+            {
+                return new List<ControlPickupEnum>();
+            }
+            else
+            {
+                bool keepGoing = true;
+                int yote = 0;
+                do
+                {
+                    lostControls.RemoveAt(Random.Range(0,lostControls.Count));
+                    yote++;
+                } while (yote < numberToLose || lostControls.Count > 1);
+
+                return lostControls;
             }
         }
     }
