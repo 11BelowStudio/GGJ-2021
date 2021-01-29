@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
 using Random = UnityEngine.Random;
+// ReSharper disable CheckNamespace
 
 #pragma warning disable 618, 649
 namespace UnityStandardAssets.Characters.FirstPerson
