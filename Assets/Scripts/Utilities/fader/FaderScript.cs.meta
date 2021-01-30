@@ -5,7 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - black: {fileID: 2800000, guid: ee570af7492785c44a5e8faabdfce2f9, type: 3}
-  - white: {fileID: 2800000, guid: 5b16a09ae66b98e4ea98226b8d0774e2, type: 3}
+  - beige: {fileID: 2800000, guid: eecb5ca88d5d88441b9f50aaa72cd28e, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

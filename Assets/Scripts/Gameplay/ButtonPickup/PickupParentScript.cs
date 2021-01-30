@@ -22,10 +22,14 @@ namespace Gameplay.ButtonPickup
         
         public AudioClip pickedUpNoise;
 
-        private List<GameObject> pickupPositions;
+        private List<PickupLocationScript> pickupPositions;
+        
+        private List<PickupLocationScript> usedPickupPositions;
         private void Awake()
         {
-            pickupPositions = new List<GameObject>(GameObject.FindGameObjectsWithTag("PickupPosition"));
+            pickupPositions = new List<PickupLocationScript>(FindObjectsOfType<PickupLocationScript>());
+            usedPickupPositions = new List<PickupLocationScript>();
+            
             jumpPickup.transform.position = GameObject.Find("JumpPickupPosition").transform.position;
             Vector3 holdPos = holdingPosition.transform.position;
             forwardPickup.transform.position = holdPos;
@@ -38,7 +42,16 @@ namespace Gameplay.ButtonPickup
         {
             foreach(ControlPickupEnum c in hideThese)
             {
-                MovePickup(c, pickupPositions[Random.Range(0, pickupPositions.Count - 1)].transform.position);
+                if (pickupPositions.Count == 0)
+                {
+                    pickupPositions.AddRange(usedPickupPositions);
+                    usedPickupPositions.Clear();
+                }
+                int cursor = Random.Range(0, pickupPositions.Count - 1);
+                PickupLocationScript putItHere = pickupPositions[cursor];
+                MovePickup(c, putItHere.transform.position);
+                pickupPositions.RemoveAt(cursor);
+                usedPickupPositions.Add(putItHere);
             }
         }
 

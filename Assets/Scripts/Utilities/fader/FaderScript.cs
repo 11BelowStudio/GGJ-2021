@@ -20,12 +20,12 @@ namespace Utilities.fader
 		public Texture2D black;
 		
 
-		public Texture2D white;
+		public Texture2D beige;
 
 		public enum FadeType
         {
 			BLACK,
-			WHITE
+			BEIGE
         }
 
 		private bool fading;
@@ -81,8 +81,8 @@ namespace Utilities.fader
 				case FadeType.BLACK:
 					fadeTexture = black;
 					break;
-				case FadeType.WHITE:
-					fadeTexture = white;
+				case FadeType.BEIGE:
+					fadeTexture = beige;
 					break;
 			}
 
@@ -112,6 +112,11 @@ namespace Utilities.fader
 			return 1.0f / fadeSpeed;
 		}
 
+		public void FadeAndQuit(FadeType texture = FadeType.BLACK)
+		{
+			StartCoroutine(DoTheFadingAndTheQuitting(texture));
+		}
+
         
 		//callbacked when a scene is loaded
         void OnLevelLoaded(Scene scene, LoadSceneMode mode)
@@ -132,6 +137,17 @@ namespace Utilities.fader
 			SceneManager.LoadScene(swapToIndex);
 			//yield break;
         }
+
+
+		private IEnumerator DoTheFadingAndTheQuitting(FadeType texture = FadeType.BLACK)
+		{
+			fadeSpeed *= 0.1f;
+			//does the fading
+			yield return new WaitForSeconds(BeginFade(1, texture));
+			Time.timeScale = 0;
+			//and also the quitting
+			Application.Quit(0);
+		}
 		
 	}
 

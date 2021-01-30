@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Gameplay.ButtonPickup;
 using Gameplay.Kiosk;
 using Gameplay.Player;
+using Utilities.fader;
 using Random = UnityEngine.Random;
 
 namespace Gameplay
@@ -32,6 +33,8 @@ namespace Gameplay
 
         private KioskEntranceTriggerCollider kioskTrigger;
 
+        private KioskRoofScript kioskRoof;
+
         private NPCScript npc;
 
         private bool _paused;
@@ -43,6 +46,10 @@ namespace Gameplay
         public AudioClip delivery3;
 
         public AudioClip free;
+
+        private bool theEagleHasLandedOnTheRoof;
+
+        private bool done;
 
         public bool Paused
         {
@@ -62,6 +69,7 @@ namespace Gameplay
 
             kioskSolid = FindObjectOfType<KioskEntranceSolidCollider>();
             kioskTrigger = FindObjectOfType<KioskEntranceTriggerCollider>();
+            kioskRoof = FindObjectOfType<KioskRoofScript>();
             
             npc = FindObjectOfType<NPCScript>();
 
@@ -71,6 +79,10 @@ namespace Gameplay
             m_AudioSource.clip = delivery1;
             m_AudioSource.Play();
             m_AudioSource.loop = true;
+
+            theEagleHasLandedOnTheRoof = false;
+
+            done = false;
         }
 
         public void PauseButtonPressed()
@@ -126,7 +138,6 @@ namespace Gameplay
                     m_AudioSource.clip = delivery3;
                     m_AudioSource.loop = true;
                     m_AudioSource.Play();
-                    theDoor.gameObject.SetActive(false);
                     break;
             }
 
@@ -157,13 +168,43 @@ namespace Gameplay
 
             if (deliveryCount == 3)
             {
+                theDoor.gameObject.SetActive(false);
                 //bye bye npc
                 npc.ByeByeNPC();
                 m_AudioSource.Stop();
             }
         }
 
-    }
+        public void Update()
+        {
+            if (!_paused)
+            {
+                switch (whereIs)
+                {
+                    case PlayerLocationState.IsFree:
+                        if (theEagleHasLandedOnTheRoof)
+                        {
+                            if (!done && thePlayer.transform.position.y < -50f)
+                            {
+                                FindObjectOfType<FaderScript>().FadeAndQuit(FaderScript.FadeType.BEIGE);
+                                done = true;
+                            }
+                        }
+                        else
+                        {
+                            if (thePlayer.transform.position.y > 5f)
+                            {
+                                kioskRoof.TimeToCollide();
+                                theEagleHasLandedOnTheRoof = true;
+                            }
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        }
     
     public enum ControlPickupEnum{
         Forward,
