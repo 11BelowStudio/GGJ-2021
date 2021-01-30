@@ -8,6 +8,7 @@ TagManager:
   - PickupPosition
   - JumpPickupPosition
   - PlayerWarpPoint
+  - KioskEntrance
   layers:
   - Default
   - TransparentFX
