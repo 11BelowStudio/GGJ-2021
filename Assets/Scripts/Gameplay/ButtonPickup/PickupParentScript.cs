@@ -25,7 +25,13 @@ namespace Gameplay.ButtonPickup
         private List<GameObject> pickupPositions;
         private void Awake()
         {
-            pickupPositions = new List<GameObject>(GameObject.FindGameObjectsWithTag("pickupPosition"));
+            pickupPositions = new List<GameObject>(GameObject.FindGameObjectsWithTag("PickupPosition"));
+            jumpPickup.transform.position = GameObject.Find("JumpPickupPosition").transform.position;
+            Vector3 holdPos = holdingPosition.transform.position;
+            forwardPickup.transform.position = holdPos;
+            backPickup.transform.position = holdPos;
+            leftPickup.transform.position = holdPos;
+            rightPickup.transform.position = holdPos;
         }
 
         public void HidePickups(List<ControlPickupEnum> hideThese)

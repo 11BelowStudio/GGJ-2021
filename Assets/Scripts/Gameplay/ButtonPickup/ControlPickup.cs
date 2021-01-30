@@ -39,6 +39,7 @@ namespace Gameplay.ButtonPickup
 
         void OnTriggerEnter(Collider other)
         {
+            Debug.Log("Hit!");
             if (other.tag.Equals("Player"))
             {
                 PlayerController p = other.GetComponent<PlayerController>();

@@ -233,15 +233,33 @@ namespace Gameplay.Player
             }
             else
             {
-                bool keepGoing = true;
                 int yote = 0;
+                List<ControlPickupEnum> yeetThese = new List<ControlPickupEnum>();
                 do
                 {
-                    lostControls.RemoveAt(Random.Range(0,lostControls.Count));
+                    int yeet = Random.Range(0, lostControls.Count);
+                    ControlPickupEnum yeetThis = lostControls[yeet];
+                    switch (yeetThis)
+                    {
+                        case ControlPickupEnum.Forward:
+                            canForward = false;
+                            break;
+                        case ControlPickupEnum.Backward:
+                            canBackward = false;
+                            break;
+                        case ControlPickupEnum.Left:
+                            canLeft = false;
+                            break;
+                        case ControlPickupEnum.Right:
+                            canRight = false;
+                            break;
+                    }
+                    yeetThese.Add(yeetThis);
+                    lostControls.RemoveAt(yeet);
                     yote++;
-                } while (yote < numberToLose || lostControls.Count > 1);
+                } while (yote < numberToLose && lostControls.Count > 1);
 
-                return lostControls;
+                return yeetThese;
             }
         }
     }
