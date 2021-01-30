@@ -73,7 +73,7 @@ namespace Gameplay.Player
         // Update is called once per frame
         private void Update()
         {
-            if (CrossPlatformInputManager.GetButtonDown("Escape"))
+            if (CrossPlatformInputManager.GetButtonDown("Cancel"))
             {
                 gc.PauseButtonPressed();
             }

@@ -38,6 +38,12 @@ namespace Gameplay
 
         private AudioSource m_AudioSource;
 
+        public AudioClip delivery1;
+        public AudioClip delivery2;
+        public AudioClip delivery3;
+
+        public AudioClip free;
+
         public bool Paused
         {
             get { return _paused; }
@@ -62,6 +68,9 @@ namespace Gameplay
             _paused = false;
             
             m_AudioSource = GetComponent<AudioSource>();
+            m_AudioSource.clip = delivery1;
+            m_AudioSource.Play();
+            m_AudioSource.loop = true;
         }
 
         public void PauseButtonPressed()
@@ -104,9 +113,21 @@ namespace Gameplay
             
             thePlayer.Teleport(warpLocations[Random.Range(0,warpLocations.Count)].transform.position);
 
-            if (deliveryCount == 3)
+            switch (deliveryCount)
             {
-                theDoor.gameObject.SetActive(false);
+                case 2:
+                    m_AudioSource.Stop();
+                    m_AudioSource.clip = delivery2;
+                    m_AudioSource.loop = true;
+                    m_AudioSource.Play();
+                    break;
+                case 3:
+                    m_AudioSource.Stop();
+                    m_AudioSource.clip = delivery3;
+                    m_AudioSource.loop = true;
+                    m_AudioSource.Play();
+                    theDoor.gameObject.SetActive(false);
+                    break;
             }
 
             whereIs = PlayerLocationState.IsLost;
@@ -118,6 +139,9 @@ namespace Gameplay
         {
             if (whereIs != PlayerLocationState.IsFree)
             {
+                m_AudioSource.clip = free;
+                m_AudioSource.loop = true;
+                m_AudioSource.Play();
                 whereIs = PlayerLocationState.IsFree;
                 kioskSolid.StopColliding();
             }
@@ -135,6 +159,7 @@ namespace Gameplay
             {
                 //bye bye npc
                 npc.ByeByeNPC();
+                m_AudioSource.Stop();
             }
         }
 
