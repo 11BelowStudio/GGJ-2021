@@ -24,7 +24,7 @@ namespace Gameplay.Kiosk
         {
             originLocation = gameObject.transform.position;
 
-            npcByeByeLocation = new Vector3(originLocation.x, originLocation.y - 10, originLocation.z);
+            npcByeByeLocation = new Vector3(originLocation.x, originLocation.y + 10, originLocation.z);
             
             doWeCareAboutTheNPC = true;
             
@@ -46,6 +46,7 @@ namespace Gameplay.Kiosk
                 if (byeByeTime >= byeByeLength)
                 {
                     npcIsLeaving = false;
+                    this.gameObject.SetActive(false);
                 }
             }
         }
