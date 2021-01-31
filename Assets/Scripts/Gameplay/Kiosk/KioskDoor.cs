@@ -13,10 +13,9 @@ namespace Gameplay.Kiosk
         
         public void OnTriggerEnter(Collider other)
         {
-            Debug.Log("hit!");
             if (other.tag.Equals("Player"))
             {
-                gc.ThePlayerGotLost();
+                gc.PlayerWalkedIntoDoor();
             }
         }
     }

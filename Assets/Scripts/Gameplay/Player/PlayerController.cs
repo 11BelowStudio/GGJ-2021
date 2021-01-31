@@ -53,6 +53,11 @@ namespace Gameplay.Player
 
         public GameController gc;
 
+        private BagEnum currentBag;
+        public GameObject bag1;
+        public GameObject bag2;
+        public GameObject bag3;
+
         // Use this for initialization
         private void Start()
         {
@@ -67,6 +72,8 @@ namespace Gameplay.Player
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+            
+            ChangeBag(BagEnum.NoBag);
         }
 
 
@@ -306,6 +313,28 @@ namespace Gameplay.Player
         public List<ControlPickupEnum> LoseControls(int howManyToLose)
         {
             return controlController.LoseControls(howManyToLose);
+        }
+
+        public void ChangeBag(BagEnum bagToHold)
+        {
+            currentBag = bagToHold;
+            switch (currentBag)
+            {
+                case BagEnum.Bag1:
+                    bag1.gameObject.SetActive(true);
+                    break;
+                case BagEnum.Bag2:
+                    bag2.gameObject.SetActive(true);
+                    break;
+                case BagEnum.Bag3:
+                    bag3.gameObject.SetActive(true);
+                    break;
+                case BagEnum.NoBag:
+                    bag1.gameObject.SetActive(false);
+                    bag2.gameObject.SetActive(false);
+                    bag3.gameObject.SetActive(false);
+                    break;
+            }
         }
         
     }

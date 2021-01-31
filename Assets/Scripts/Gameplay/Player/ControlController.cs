@@ -24,6 +24,8 @@ namespace Gameplay.Player
         private bool _jumpInput;
 
         private PlayerController p;
+        
+        private GameController gc;
 
         public bool JumpInput
         {
@@ -61,106 +63,117 @@ namespace Gameplay.Player
 
             _jumpInput = false;
             _movement = new Vector2(0, 0);
+
+            gc = GameObject.FindObjectOfType<GameController>();
         }
         
         private void Update()
         {
 
-            float rawStrafeAxis = CrossPlatformInputManager.GetAxisRaw("Horizontal");
-
-            axisEnumChange(ref strafeAxisChange, rawStrafeAxis);
-
-            switch (strafeAxisChange)
+            if (!gc.Paused)
             {
-                case AxisChangeEnum.PositiveFromNeutral:
+
+                float rawStrafeAxis = CrossPlatformInputManager.GetAxisRaw("Horizontal");
+
+                axisEnumChange(ref strafeAxisChange, rawStrafeAxis);
+
+                switch (strafeAxisChange)
+                {
+                    case AxisChangeEnum.PositiveFromNeutral:
+                        if (!canRight)
+                        {
+                            p.gc.MakePickupPlayNoise(ControlPickupEnum.Right);
+                        }
+
+                        strafeAxisChange = AxisChangeEnum.Positive;
+                        break;
+                    case AxisChangeEnum.NegativeFromNeutral:
+                        if (!canLeft)
+                        {
+                            p.gc.MakePickupPlayNoise(ControlPickupEnum.Left);
+                        }
+
+                        strafeAxisChange = AxisChangeEnum.Negative;
+                        break;
+                }
+
+                float rawForwardAxis = CrossPlatformInputManager.GetAxisRaw("Vertical");
+
+                axisEnumChange(ref forwardAxisChange, rawForwardAxis);
+
+                switch (forwardAxisChange)
+                {
+                    case AxisChangeEnum.PositiveFromNeutral:
+                        if (!canForward)
+                        {
+                            p.gc.MakePickupPlayNoise(ControlPickupEnum.Forward);
+                        }
+
+                        forwardAxisChange = AxisChangeEnum.Positive;
+                        break;
+                    case AxisChangeEnum.NegativeFromNeutral:
+                        if (!canBackward)
+                        {
+                            p.gc.MakePickupPlayNoise(ControlPickupEnum.Backward);
+                        }
+
+                        forwardAxisChange = AxisChangeEnum.Negative;
+                        break;
+                }
+
+                if (CrossPlatformInputManager.GetButtonDown("Jump"))
+                {
+                    if (canJump)
+                    {
+                        _jumpInput = true;
+                    }
+                    else
+                    {
+                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Jump);
+                    }
+                }
+
+
+                float strafe = CrossPlatformInputManager.GetAxis("Horizontal");
+                float advance = CrossPlatformInputManager.GetAxis("Vertical");
+
+
+                Vector2 desired = new Vector2(strafe, advance);
+                if (desired.magnitude > 1)
+                {
+                    desired = desired.normalized;
+                }
+
+                float actualStrafe = desired.x;
+
+                //if trying to move right
+                if (strafe > 0)
+                {
                     if (!canRight)
                     {
-                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Right);
+                        actualStrafe = 0;
                     }
-                    strafeAxisChange = AxisChangeEnum.Positive;
-                    break;
-                case AxisChangeEnum.NegativeFromNeutral:
-                    if (!canLeft)
-                    {
-                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Left);
-                    }
-                    strafeAxisChange = AxisChangeEnum.Negative;
-                    break;
-            }
-                
-            float rawForwardAxis = CrossPlatformInputManager.GetAxisRaw("Vertical");
-            
-            axisEnumChange(ref forwardAxisChange, rawForwardAxis);
-            
-            switch (forwardAxisChange)
-            {
-                case AxisChangeEnum.PositiveFromNeutral:
-                    if (!canForward)
-                    {
-                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Forward);
-                    }
-                    forwardAxisChange = AxisChangeEnum.Positive;
-                    break;
-                case AxisChangeEnum.NegativeFromNeutral:
-                    if (!canBackward)
-                    {
-                        p.gc.MakePickupPlayNoise(ControlPickupEnum.Backward);
-                    }
-                    forwardAxisChange = AxisChangeEnum.Negative;
-                    break;
-            }
-
-            if (CrossPlatformInputManager.GetButtonDown("Jump"))
-            {
-                if (canJump)
-                {
-                    _jumpInput = true;
                 }
-                else
-                {
-                    p.gc.MakePickupPlayNoise(ControlPickupEnum.Jump);
-                }
-            }
-            
-            
-            float strafe = CrossPlatformInputManager.GetAxis("Horizontal");
-            float advance = CrossPlatformInputManager.GetAxis("Vertical");
-
-
-            Vector2 desired = new Vector2(strafe, advance);
-            if (desired.magnitude > 1)
-            {
-                desired = desired.normalized;
-            }
-
-            float actualStrafe = desired.x;
-                
-            //if trying to move right
-            if (strafe > 0)
-            {
-                if (!canRight)
+                else if (!canLeft)
                 {
                     actualStrafe = 0;
                 }
-            } else if (!canLeft)
-            {
-                actualStrafe = 0;
-            }
 
-            float actualForward = desired.y;
-            if (actualForward > 0)
-            {
-                if (!canForward)
+                float actualForward = desired.y;
+                if (actualForward > 0)
+                {
+                    if (!canForward)
+                    {
+                        actualForward = 0;
+                    }
+                }
+                else if (!canBackward)
                 {
                     actualForward = 0;
                 }
-            }
-            else if (!canBackward)
-            {
-                actualForward = 0;
-            }
 
-            _movement = new Vector2(actualStrafe, actualForward);
+                _movement = new Vector2(actualStrafe, actualForward);
+            }
 
 
         }
