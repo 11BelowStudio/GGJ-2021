@@ -112,9 +112,9 @@ namespace Utilities.fader
 			return 1.0f / fadeSpeed;
 		}
 
-		public void FadeAndQuit(FadeType texture = FadeType.BLACK)
+		public void FadeAndQuit(FadeType texture = FadeType.BLACK, bool slowMo = true)
 		{
-			StartCoroutine(DoTheFadingAndTheQuitting(texture));
+			StartCoroutine(DoTheFadingAndTheQuitting(texture, slowMo));
 		}
 
         
@@ -139,14 +139,22 @@ namespace Utilities.fader
         }
 
 
-		private IEnumerator DoTheFadingAndTheQuitting(FadeType texture = FadeType.BLACK)
+		private IEnumerator DoTheFadingAndTheQuitting(FadeType texture = FadeType.BLACK, bool slowMo = true)
 		{
-			fadeSpeed *= 0.1f;
+			if (slowMo)
+			{
+				//slowmotion
+				fadeSpeed *= 0.1f;
+			}
+
 			//does the fading
 			yield return new WaitForSeconds(BeginFade(1, texture));
 			Time.timeScale = 0;
 			//and also the quitting
+			#if UNITY_WEBGL
+			#else
 			Application.Quit(0);
+			#endif
 		}
 		
 	}

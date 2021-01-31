@@ -94,11 +94,14 @@ namespace Gameplay
             dialogue = FindObjectOfType<DialogueScript>();
 
             _inDialogue = false;
+            dialogue.gameObject.SetActive(false);
+            pauseMenu.gameObject.SetActive(false);
         }
 
         public void Start()
         {
             _inDialogue = true;
+            dialogue.gameObject.SetActive(true);
             dialogue.StartConversation(DialogueEnum.First);
         }
 
@@ -123,6 +126,7 @@ namespace Gameplay
             Time.timeScale = 0;
             m_AudioSource.Pause();
             thePlayer.ForceMouseUnlock();
+            pauseMenu.gameObject.SetActive(true);
             pauseMenu.ShowPauseMenu();
         }
 
@@ -133,6 +137,7 @@ namespace Gameplay
             m_AudioSource.UnPause();
             thePlayer.ForceMouseLock();
             pauseMenu.HidePauseMenu();
+            pauseMenu.gameObject.SetActive(false);
         }
 
 
@@ -203,6 +208,7 @@ namespace Gameplay
             
             thePlayer.ForceMouseUnlock();
 
+            dialogue.gameObject.SetActive(true);
             switch (deliveryCount)
             {
                 case 0:
@@ -229,6 +235,7 @@ namespace Gameplay
         {
 
             _inDialogue = false;
+            dialogue.gameObject.SetActive(false);
             thePlayer.ChangeBag(BagEnum.NoBag);
 
             if (deliveryCount == 3)
