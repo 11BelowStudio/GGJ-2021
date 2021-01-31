@@ -49,7 +49,7 @@ namespace Gameplay
 
         private bool theEagleHasLandedOnTheRoof;
 
-        private bool done;
+        public bool done;
 
         private PauseMenuScript pauseMenu;
 
@@ -226,8 +226,6 @@ namespace Gameplay
                     break;
             }
             
-            //TODO: cutscene with player talking to npc
-
             
         }
 

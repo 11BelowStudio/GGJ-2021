@@ -15,6 +15,8 @@ namespace TitleScreen
 
         public TitleState menuState;
 
+        public AudioSource theAudioSource;
+
         public void Awake()
         {
             menuState = TitleState.ShowingTitle;
@@ -30,9 +32,21 @@ namespace TitleScreen
 
         public void Update()
         {
+            
             if (menuState != TitleState.ItsFadeTime && CrossPlatformInputManager.GetButtonDown("Cancel"))
             {
+                #if UNITY_WEBGL || UNITY_EDITOR
+                if (theAudioSource.isPlaying)
+                {
+                    theAudioSource.Pause();
+                }
+                else
+                {
+                    theAudioSource.UnPause();
+                }
+                #else
                 QuitGame();
+                #endif
             }
             
             if (menuState == TitleState.ShowingIntro)

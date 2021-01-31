@@ -149,10 +149,15 @@ namespace Utilities.fader
 
 			//does the fading
 			yield return new WaitForSeconds(BeginFade(1, texture));
-			Time.timeScale = 0;
 			//and also the quitting
-			#if UNITY_WEBGL
+			#if UNITY_WEBGL || UNITY_EDITOR
+			if (slowMo)
+			{
+				fadeSpeed *= 10; //undo slowmo if it was enabled
+			}
+			SceneManager.LoadScene(0);
 			#else
+			Time.timeScale = 0;
 			Application.Quit(0);
 			#endif
 		}
